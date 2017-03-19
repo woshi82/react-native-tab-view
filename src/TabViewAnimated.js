@@ -34,7 +34,6 @@ type Props = {
   onChangePosition?: (value: number) => void;
   initialLayout?: Layout;
   canJumpToTab?: (route: Route) => boolean;
-  lazy?: boolean;
   renderPager: (props: PagerProps) => React.Element<*>;
   renderScene: (props: SceneRendererProps & Scene) => ?React.Element<*>;
   renderHeader?: (props: SceneRendererProps) => ?React.Element<*>;
@@ -48,7 +47,6 @@ type State = {
   progress: Animated.Value;
   offset: Animated.Value;
   position: Animated.Value;
-  loaded: Array<number>;
   height: Animated.Value;
   width: Animated.Value;
 }
@@ -76,7 +74,6 @@ export default class TabViewAnimated extends PureComponent<DefaultProps, Props, 
     }).isRequired,
     onChangePosition: PropTypes.func,
     canJumpToTab: PropTypes.func,
-    lazy: PropTypes.bool,
     renderPager: PropTypes.func.isRequired,
     renderScene: PropTypes.func.isRequired,
     renderHeader: PropTypes.func,
@@ -123,7 +120,6 @@ export default class TabViewAnimated extends PureComponent<DefaultProps, Props, 
       progress,
       offset,
       position,
-      loaded: [ this.props.navigationState.index ],
       height,
       width,
     };
@@ -147,20 +143,8 @@ export default class TabViewAnimated extends PureComponent<DefaultProps, Props, 
     this._handleChangePosition(this.state.position.__getValue());
   }
 
-  _renderScene = (props: SceneRendererProps & Scene) => {
-    const { renderScene, navigationState, lazy } = this.props;
-    const { loaded } = this.state;
-    if (lazy) {
-      if (loaded.includes(navigationState.routes.indexOf(props.route))) {
-        return renderScene(props);
-      }
-      return null;
-    }
-    return renderScene(props);
-  };
-
   _renderItems = () => {
-    const { renderPager, renderHeader, renderFooter, navigationState } = this.props;
+    const { renderPager, renderScene, renderHeader, renderFooter, navigationState } = this.props;
     const { layout } = this.state;
     const currentRoute = navigationState.routes[navigationState.index];
     const pagerProps = this._buildPagerProps();
@@ -172,7 +156,7 @@ export default class TabViewAnimated extends PureComponent<DefaultProps, Props, 
         {renderPager({
           ...pagerProps,
           children: navigationState.routes.map((route, index) => (
-            this._renderScene({
+            renderScene({
               ...sceneRendererProps,
               route,
               index,
@@ -183,26 +167,6 @@ export default class TabViewAnimated extends PureComponent<DefaultProps, Props, 
         {renderFooter && renderFooter(sceneRendererProps)}
       </View>
     );
-  };
-
-  _handleChangePosition = (value: number) => {
-    const { onChangePosition, navigationState, lazy } = this.props;
-    if (onChangePosition) {
-      onChangePosition(value);
-    }
-    const { loaded } = this.state;
-    if (lazy) {
-      let next = Math.ceil(value);
-      if (next === navigationState.index) {
-        next = Math.floor(value);
-      }
-      if (loaded.includes(next)) {
-        return;
-      }
-      this.setState({
-        loaded: [ ...loaded, next ],
-      });
-    }
   };
 
   _handleLayout = (e: any) => {
@@ -262,7 +226,6 @@ export default class TabViewAnimated extends PureComponent<DefaultProps, Props, 
     return (
       <View
         {...this.props}
-        loaded={this.state.loaded}
         onLayout={this._handleLayout}
       >
         {this._renderItems()}

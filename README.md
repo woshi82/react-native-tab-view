@@ -104,7 +104,6 @@ Component responsible for managing tab scenes. It accepts the following props:
 - `onRequestChangeTab` - callback for when the current tab changes, should do the `setState`
 - `onChangePosition` - callback called with position value as it changes (e.g. - on swipe or tab change), avoid doing anything expensive here
 - `canJumpToTab` - optional callback which accepts a route, and returns a boolean indicating whether jumping to the tab is allowed
-- `lazy` - whether to load tabs lazily when you start switching
 - `initialLayout` - optional object containing the initial `height` and `width`, can be passed to prevent the one frame delay in rendering
 - `renderPager` - optional callback which renders a pager responsible for handling swipes
 - `renderHeader` - optional callback which renders a header, useful for a top tab bar
