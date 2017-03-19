@@ -192,7 +192,7 @@ export default class TopBarIconExample extends Component {
         renderPager={this._renderPager}
         renderScene={this._renderScene}
         renderFooter={this._renderFooter}
-        onRequestChangeTab={this._handleChangeTab}
+        onChangeTab={this._handleChangeTab}
       />
     );
   }

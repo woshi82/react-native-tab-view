@@ -84,7 +84,7 @@ export default class TabViewExample extends Component {
         navigationState={this.state}
         renderScene={this._renderScene}
         renderHeader={this._renderHeader}
-        onRequestChangeTab={this._handleChangeTab}
+        onChangeTab={this._handleChangeTab}
       />
     );
   }
@@ -101,9 +101,7 @@ The package exposes the following components,
 Component responsible for managing tab scenes. It accepts the following props:
 
 - `navigationState` - the current navigation state
-- `onRequestChangeTab` - callback for when the current tab changes, should do the `setState`
-- `onChangePosition` - callback called with position value as it changes (e.g. - on swipe or tab change), avoid doing anything expensive here
-- `canJumpToTab` - optional callback which accepts a route, and returns a boolean indicating whether jumping to the tab is allowed
+- `onChangeTab` - callback for when the current tab changes, should do the `setState`
 - `initialLayout` - optional object containing the initial `height` and `width`, can be passed to prevent the one frame delay in rendering
 - `renderPager` - optional callback which renders a pager responsible for handling swipes
 - `renderHeader` - optional callback which renders a header, useful for a top tab bar
@@ -189,7 +187,7 @@ Then pass `this.state` as the `navigationState` prop to `<TabViewAnimated />` or
   navigationState={this.state}
   renderScene={this._renderPage}
   renderHeader={this._renderHeader}
-  onRequestChangeTab={this._handleChangeTab}
+  onChangeTab={this._handleChangeTab}
 />
 ```
 

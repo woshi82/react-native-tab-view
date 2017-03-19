@@ -141,7 +141,7 @@ export default class TopBarIconExample extends Component {
         navigationState={this.state}
         renderScene={this._renderScene}
         renderFooter={this._renderFooter}
-        onRequestChangeTab={this._handleChangeTab}
+        onChangeTab={this._handleChangeTab}
       />
     );
   }

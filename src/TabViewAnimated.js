@@ -30,10 +30,8 @@ type DefaultProps = {
 
 type Props = {
   navigationState: NavigationState;
-  onRequestChangeTab: (index: number) => void;
-  onChangePosition?: (value: number) => void;
+  onChangeTab: (index: number) => void;
   initialLayout?: Layout;
-  canJumpToTab?: (route: Route) => boolean;
   renderPager: (props: PagerProps) => React.Element<*>;
   renderScene: (props: SceneRendererProps & Scene) => ?React.Element<*>;
   renderHeader?: (props: SceneRendererProps) => ?React.Element<*>;
@@ -72,8 +70,6 @@ export default class TabViewAnimated extends PureComponent<DefaultProps, Props, 
       height: PropTypes.number.isRequired,
       width: PropTypes.number.isRequired,
     }).isRequired,
-    onChangePosition: PropTypes.func,
-    canJumpToTab: PropTypes.func,
     renderPager: PropTypes.func.isRequired,
     renderScene: PropTypes.func.isRequired,
     renderHeader: PropTypes.func,
@@ -213,13 +209,7 @@ export default class TabViewAnimated extends PureComponent<DefaultProps, Props, 
       return;
     }
 
-    const { canJumpToTab, navigationState } = this.props;
-
-    if (canJumpToTab && !canJumpToTab(navigationState.routes[index])) {
-      return;
-    }
-
-    this.props.onRequestChangeTab(index);
+    this.props.onChangeTab(index);
   };
 
   render() {

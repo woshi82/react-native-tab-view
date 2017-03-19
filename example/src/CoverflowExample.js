@@ -141,7 +141,7 @@ export default class CoverflowExample extends Component {
         navigationState={this.state}
         renderPager={this._renderPager}
         renderScene={this._renderScene}
-        onRequestChangeTab={this._handleChangeTab}
+        onChangeTab={this._handleChangeTab}
         initialLayout={initialLayout}
       />
     );
