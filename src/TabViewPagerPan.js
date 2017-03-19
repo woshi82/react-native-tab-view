@@ -9,8 +9,8 @@ import {
   View,
 } from 'react-native';
 import TabViewStyleInterpolator from './TabViewStyleInterpolator';
-import { SceneRendererPropType } from './TabViewPropTypes';
-import type { SceneRendererProps } from './TabViewTypeDefinitions';
+import { PagerPropsPropType } from './TabViewPropTypes';
+import type { PagerProps, PagerNormalizerProps } from './TabViewTypeDefinitions';
 import type { GestureEvent, GestureState } from './PanResponderTypes';
 
 const styles = StyleSheet.create({
@@ -21,23 +21,42 @@ const styles = StyleSheet.create({
   },
 });
 
+type TransitionProps = {
+  progress: number;
+}
+
+type TransitionSpec = {
+  timing: Function;
+}
+
+type TransitionConfigurator = (currentTransitionProps: TransitionProps, nextTransitionProps: TransitionProps) => ?TransitionSpec
+
 type DefaultProps = {
+  configureTransition: TransitionConfigurator;
   swipeDistanceThreshold: number;
   swipeVelocityThreshold: number;
 }
 
-type Props = SceneRendererProps & {
+type Props = PagerProps & {
+  configureTransition: TransitionConfigurator;
   swipeEnabled?: boolean;
   swipeDistanceThreshold: number;
   swipeVelocityThreshold: number;
   children?: any;
 }
 
+const DefaultTransitionSpec = {
+  timing: Animated.spring,
+  tension: 300,
+  friction: 35,
+};
+
 const DEAD_ZONE = 12;
 
 export default class TabViewPagerPan extends PureComponent<DefaultProps, Props, void> {
   static propTypes = {
-    ...SceneRendererPropType,
+    ...PagerPropsPropType,
+    configureTransition: PropTypes.func.isRequired,
     swipeEnabled: PropTypes.bool,
     swipeDistanceThreshold: PropTypes.number.isRequired,
     swipeVelocityThreshold: PropTypes.number.isRequired,
@@ -45,11 +64,16 @@ export default class TabViewPagerPan extends PureComponent<DefaultProps, Props, 
   };
 
   static defaultProps = {
+    configureTransition: () => DefaultTransitionSpec,
     swipeDistanceThreshold: 120,
     swipeVelocityThreshold: 0.25,
   };
 
+  static normalize = ({ offset }: PagerNormalizerProps) => offset;
+
   componentWillMount() {
+    this.props.offset.addListener(this._trackOffset);
+    this._lastOffset = this.props.navigationState.index;
     this._panResponder = PanResponder.create({
       onMoveShouldSetPanResponder: this._canMoveScreen,
       onMoveShouldSetPanResponderCapture: this._canMoveScreen,
@@ -61,10 +85,55 @@ export default class TabViewPagerPan extends PureComponent<DefaultProps, Props, 
     });
   }
 
+  componentWillReceiveProps(nextProps: Props) {
+    if (this.props.layout !== nextProps.layout || Children.count(this.props.children) !== Children.count(nextProps.children)) {
+      global.requestAnimationFrame(() =>
+        this._transitionTo(this.props.navigationState.index, nextProps.navigationState.index)
+      );
+    }
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    global.requestAnimationFrame(() =>
+      this._transitionTo(prevProps.navigationState.index, this.props.navigationState.index)
+    );
+  }
+
+  componentWillUnmount() {
+    this.props.offset.removeListener(this._trackOffset);
+  }
+
   _panResponder: Object;
+  _lastOffset: number;
   _lastValue = null;
   _isMoving = null;
   _startDirection = 0;
+
+  _trackOffset = (e: { value: number }) => {
+    this._lastOffset = e.value;
+  };
+
+  _transitionTo = (fromValue: number, toValue: number) => {
+    const currentTransitionProps = {
+      position: fromValue,
+    };
+    const nextTransitionProps = {
+      position: toValue,
+    };
+    let transitionSpec;
+    if (this.props.configureTransition) {
+      transitionSpec = this.props.configureTransition(currentTransitionProps, nextTransitionProps);
+    }
+    if (transitionSpec) {
+      const { timing, ...transitionConfig } = transitionSpec;
+      timing(this.props.offset, {
+        ...transitionConfig,
+        toValue,
+      }).start();
+    } else {
+      this.props.offset.setValue(toValue);
+    }
+  }
 
   _isIndexInRange = (index: number) => {
     const { routes } = this.props.navigationState;
@@ -125,8 +194,9 @@ export default class TabViewPagerPan extends PureComponent<DefaultProps, Props, 
   };
 
   _startGesture = () => {
-    this._lastValue = this.props.getLastPosition();
-    this.props.position.stopAnimation();
+    this.props.offset.stopAnimation(value => {
+      this._lastValue = value;
+    });
   };
 
   _respondToGesture = (evt: GestureEvent, gestureState: GestureState) => {
@@ -137,13 +207,13 @@ export default class TabViewPagerPan extends PureComponent<DefaultProps, Props, 
       this._isMoving = this._isMovingHorzontally(evt, gestureState);
     }
     if (this._isMoving && this._isIndexInRange(nextPosition)) {
-      this.props.position.setValue(nextPosition);
+      this.props.offset.setValue(nextPosition);
     }
   };
 
   _finishGesture = (evt: GestureEvent, gestureState: GestureState) => {
     const currentIndex = this.props.navigationState.index;
-    const currentValue = this.props.getLastPosition();
+    const currentValue = this._lastOffset;
     if (currentValue !== currentIndex) {
       if (this._isMoving && !this._isReverseDirection(gestureState)) {
         const nextIndex = this._getNextIndex(evt, gestureState);

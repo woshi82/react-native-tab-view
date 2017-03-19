@@ -21,7 +21,7 @@ Requires React Native version >= 0.36.
 
 ## Demo
 
-<a href="https://raw.githubusercontent.com/satya164/react-native-tab-view/master/demo/demo.mp4"><img src="https://raw.githubusercontent.com/satya164/react-native-tab-view/master/demo/demo.gif" width="360"></a>
+<img src='https://raw.githubusercontent.com/react-native-community/react-native-tab-view/master/demo/demo.gif' width='360'>
 
 
 ## Installation
@@ -98,11 +98,9 @@ The package exposes the following components,
 
 ### `<TabViewAnimated />`
 
-Container component responsible for managing tab transitions
+Component responsible for managing tab scenes. It accepts the following props:
 
-It accepts the following props,
 - `navigationState` - the current navigation state
-- `configureTransition` - optional callback which returns a configuration for the transition, return `null` to disable animation
 - `onRequestChangeTab` - callback for when the current tab changes, should do the `setState`
 - `onChangePosition` - callback called with position value as it changes (e.g. - on swipe or tab change), avoid doing anything expensive here
 - `canJumpToTab` - optional callback which accepts a route, and returns a boolean indicating whether jumping to the tab is allowed
@@ -117,7 +115,9 @@ It accepts the following props,
 
 Pager component based on `PanResponder`
 
-It accepts the following props,
+It accepts the following props:
+
+- `configureTransition` - optional callback which returns a configuration for the transition, return `null` to disable animation
 - `swipeEnabled` - whether to enable swipe gestures
 - `swipeDistanceThreshold` - minimum swipe distance to trigger page switch
 - `swipeVelocityThreshold` - minimum swipe velocity to trigger page switch
@@ -127,7 +127,8 @@ It accepts the following props,
 
 Pager component based on `ScrollView` (default on iOS)
 
-It accepts the following props,
+It accepts the following props:
+
 - `swipeEnabled` - whether to enable swipe gestures
 - `children` - React Element(s) to render
 
@@ -135,7 +136,8 @@ It accepts the following props,
 
 Pager component based on `ViewPagerAndroid` (default on Android)
 
-It accepts the following props,
+It accepts the following props:
+
 - `swipeEnabled` - whether to enable swipe gestures
 - `animationEnabled` - whether to enable page change animation
 - `children` - React Element(s) to render
@@ -144,7 +146,8 @@ It accepts the following props,
 
 Material design themed top tab bar
 
-It accepts the following props,
+It accepts the following props:
+
 - `getLabelText` - optional callback which receives the current scene and returns the tab label
 - `renderIcon` - optional callback which receives the current scene and returns a React Element to be used as a icon
 - `renderLabel` - optional callback which receives the current scene and returns a React Element to be used as a label

@@ -1,9 +1,9 @@
 /* @flow */
 
-import type { SceneRendererProps } from './TabViewTypeDefinitions';
+import type { PagerProps } from './TabViewTypeDefinitions';
 
-function forHorizontal(props: SceneRendererProps) {
-  const { layout, position, navigationState } = props;
+function forHorizontal(props: PagerProps) {
+  const { layout, offset, navigationState } = props;
   const { width } = layout;
   const { routes } = navigationState;
   // Prepend '-1', so there are always at least 2 items in inputRange
@@ -12,7 +12,7 @@ function forHorizontal(props: SceneRendererProps) {
     return width * i * -1;
   });
 
-  const translateX = position.interpolate({
+  const translateX = offset.interpolate({
     inputRange,
     outputRange,
   });

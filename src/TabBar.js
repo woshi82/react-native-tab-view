@@ -144,7 +144,8 @@ export default class TabBar extends PureComponent<DefaultProps, Props, State> {
 
   componentDidMount() {
     this._adjustScroll(this.props.navigationState.index);
-    this._positionListener = this.props.subscribe('position', this._adjustScroll);
+    // TODO: Figure out a way to listen to position
+    // this._positionListener = this.props.position.addListener(e => this._adjustScroll(e.value));
   }
 
   componentWillReceiveProps(nextProps: Props) {
@@ -171,7 +172,7 @@ export default class TabBar extends PureComponent<DefaultProps, Props, State> {
   }
 
   componentWillUnmount() {
-    this._positionListener.remove();
+    // this._positionListener.remove();
   }
 
   _positionListener: Object;

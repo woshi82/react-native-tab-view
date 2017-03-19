@@ -13,6 +13,18 @@ export const NavigationStatePropType = PropTypes.shape({
   index: PropTypes.number.isRequired,
 });
 
+export const PagerPropsPropType = {
+  layout: PropTypes.shape({
+    measured: PropTypes.bool.isRequired,
+    height: PropTypes.number.isRequired,
+    width: PropTypes.number.isRequired,
+  }).isRequired,
+  navigationState: NavigationStatePropType.isRequired,
+  progress: PropTypes.instanceOf(Animated.Value).isRequired,
+  offset: PropTypes.instanceOf(Animated.Value).isRequired,
+  jumpToIndex: PropTypes.func.isRequired,
+};
+
 export const SceneRendererPropType = {
   layout: PropTypes.shape({
     measured: PropTypes.bool.isRequired,
@@ -20,8 +32,6 @@ export const SceneRendererPropType = {
     width: PropTypes.number.isRequired,
   }).isRequired,
   navigationState: NavigationStatePropType.isRequired,
-  position: PropTypes.instanceOf(Animated.Value).isRequired,
+  position: PropTypes.object.isRequired,
   jumpToIndex: PropTypes.func.isRequired,
-  getLastPosition: PropTypes.func.isRequired,
-  subscribe: PropTypes.func.isRequired,
 };

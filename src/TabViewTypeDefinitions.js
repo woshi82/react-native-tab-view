@@ -2,8 +2,6 @@
 
 import { Animated } from 'react-native';
 
-export type SubscriptionName = 'jump' | 'position'
-
 export type Route = {
   key: string;
   title?: string;
@@ -26,6 +24,25 @@ export type Layout = {
   width: number;
 }
 
+export type PagerProps = {
+  layout: Layout & {
+    measured: boolean;
+  };
+  navigationState: NavigationState;
+  progress: Animated.Value;
+  offset: Animated.Value;
+  jumpToIndex: (index: number) => void;
+}
+
+export type PagerNormalizerProps = {
+  progress: Animated.Value;
+  offset: Animated.Value;
+  layout: {
+    height: Animated.Value;
+    width: Animated.Value;
+  };
+}
+
 export type SceneRendererProps = {
   layout: Layout & {
     measured: boolean;
@@ -33,6 +50,4 @@ export type SceneRendererProps = {
   navigationState: NavigationState;
   position: Animated.Value;
   jumpToIndex: (index: number) => void;
-  getLastPosition: () => number;
-  subscribe: (event: SubscriptionName, callback: Function) => { remove: Function };
 }

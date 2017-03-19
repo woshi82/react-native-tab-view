@@ -20,7 +20,8 @@ it('renders all children', () => {
           { key: 'third', testID: 'third' },
         ],
       }}
-      position={new Animated.Value(1)}
+      progress={new Animated.Value(0)}
+      offset={new Animated.Value(1)}
       jumpToIndex={jest.fn()}
       getLastPosition={jest.fn()}
       subscribe={jest.fn()}
