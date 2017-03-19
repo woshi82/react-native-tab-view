@@ -116,7 +116,7 @@ Pager component based on `PanResponder`
 
 It accepts the following props:
 
-- `configureTransition` - optional callback which returns a configuration for the transition, return `null` to disable animation
+- `configureTransition` - optional callback which returns a configuration for the transition
 - `animationEnabled` - whether to enable page change animation
 - `swipeEnabled` - whether to enable swipe gestures
 - `swipeDistanceThreshold` - minimum swipe distance to trigger page switch

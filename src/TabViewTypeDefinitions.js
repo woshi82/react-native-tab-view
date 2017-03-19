@@ -6,6 +6,8 @@ export type Route = {
   key: string;
   title?: string;
   testID?: string;
+  accessibilityLabel?: string;
+  accessible?: boolean;
 }
 
 export type NavigationState = {

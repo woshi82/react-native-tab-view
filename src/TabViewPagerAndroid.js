@@ -65,7 +65,7 @@ export default class TabViewPagerAndroid extends PureComponent<void, Props, void
     }
   }
 
-  _viewPager: Object;
+  _viewPager: ?Object;
   _isIdle: boolean = true;
   _currentIndex: number;
 

@@ -46,7 +46,7 @@ export default class TabViewPagerScroll extends PureComponent<void, Props, void>
   static normalize = ({ progress, layout }: PagerNormalizerProps) => {
     return Animated.divide(
       progress,
-      width: layout.width,
+      layout.width,
     );
   };
 

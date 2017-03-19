@@ -22,14 +22,14 @@ const styles = StyleSheet.create({
 });
 
 type TransitionProps = {
-  progress: number;
+  position: number;
 }
 
 type TransitionSpec = {
   timing: Function;
 }
 
-type TransitionConfigurator = (currentTransitionProps: TransitionProps, nextTransitionProps: TransitionProps) => ?TransitionSpec
+type TransitionConfigurator = (currentTransitionProps: TransitionProps, nextTransitionProps: TransitionProps) => TransitionSpec
 
 type DefaultProps = {
   configureTransition: TransitionConfigurator;
