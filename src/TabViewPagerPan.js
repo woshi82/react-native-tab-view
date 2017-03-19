@@ -94,9 +94,11 @@ export default class TabViewPagerPan extends PureComponent<DefaultProps, Props, 
   }
 
   componentDidUpdate(prevProps: Props) {
-    global.requestAnimationFrame(() =>
-      this._transitionTo(prevProps.navigationState.index, this.props.navigationState.index)
-    );
+    if (this._isIdle) {
+      global.requestAnimationFrame(() =>
+        this._transitionTo(prevProps.navigationState.index, this.props.navigationState.index)
+      );
+    }
   }
 
   componentWillUnmount() {
@@ -106,14 +108,14 @@ export default class TabViewPagerPan extends PureComponent<DefaultProps, Props, 
   _panResponder: Object;
   _lastOffset: number;
   _lastValue = null;
-  _isMoving = null;
+  _isIdle = true;
   _startDirection = 0;
 
   _trackOffset = (e: { value: number }) => {
     this._lastOffset = e.value;
   };
 
-  _transitionTo = (fromValue: number, toValue: number) => {
+  _transitionTo = (fromValue: number, toValue: number, callback?: Function) => {
     const currentTransitionProps = {
       position: fromValue,
     };
@@ -129,9 +131,12 @@ export default class TabViewPagerPan extends PureComponent<DefaultProps, Props, 
       timing(this.props.offset, {
         ...transitionConfig,
         toValue,
-      }).start();
+      }).start(callback);
     } else {
       this.props.offset.setValue(toValue);
+      if (typeof callback === 'function') {
+        callback();
+      }
     }
   }
 
@@ -156,7 +161,7 @@ export default class TabViewPagerPan extends PureComponent<DefaultProps, Props, 
   };
 
   _getNextIndex = (evt: GestureEvent, gestureState: GestureState) => {
-    const { index } = this.props.navigationState;
+    const currentIndex = typeof this._lastValue === 'number' ? this._lastValue : this.props.navigationState.index;
 
     let swipeVelocityThreshold = this.props.swipeVelocityThreshold;
 
@@ -170,12 +175,12 @@ export default class TabViewPagerPan extends PureComponent<DefaultProps, Props, 
       Math.abs(gestureState.dx) > this.props.swipeDistanceThreshold ||
       Math.abs(gestureState.vx) > swipeVelocityThreshold
     ) {
-      const nextIndex = index - (gestureState.dx / Math.abs(gestureState.dx));
+      const nextIndex = currentIndex - (gestureState.dx / Math.abs(gestureState.dx));
       if (this._isIndexInRange(nextIndex)) {
         return nextIndex;
       }
     }
-    return index;
+    return currentIndex;
   };
 
   _canMoveScreen = (evt: GestureEvent, gestureState: GestureState) => {
@@ -195,35 +200,41 @@ export default class TabViewPagerPan extends PureComponent<DefaultProps, Props, 
 
   _startGesture = () => {
     this.props.offset.stopAnimation(value => {
-      this._lastValue = value;
+      this._lastValue = Math.round(value);
     });
   };
 
   _respondToGesture = (evt: GestureEvent, gestureState: GestureState) => {
     const { layout: { width } } = this.props;
-    const currentPosition = typeof this._lastValue === 'number' ? this._lastValue : this.props.navigationState.index;
-    const nextPosition = currentPosition - (gestureState.dx / width);
-    if (this._isMoving === null) {
-      this._isMoving = this._isMovingHorzontally(evt, gestureState);
-    }
-    if (this._isMoving && this._isIndexInRange(nextPosition)) {
-      this.props.offset.setValue(nextPosition);
+    const currentIndex = typeof this._lastValue === 'number' ? this._lastValue : this.props.navigationState.index;
+    const nextIndex = currentIndex - (gestureState.dx / width);
+    if (this._isIdle) {
+      this._isIdle = !this._isMovingHorzontally(evt, gestureState);
+    } else {
+      if (this._isIndexInRange(nextIndex)) {
+        this.props.offset.setValue(nextIndex);
+      }
     }
   };
 
   _finishGesture = (evt: GestureEvent, gestureState: GestureState) => {
-    const currentIndex = this.props.navigationState.index;
+    const currentIndex = typeof this._lastValue === 'number' ? this._lastValue : this.props.navigationState.index;
     const currentValue = this._lastOffset;
     if (currentValue !== currentIndex) {
-      if (this._isMoving && !this._isReverseDirection(gestureState)) {
-        const nextIndex = this._getNextIndex(evt, gestureState);
-        this.props.onChangeTab(nextIndex);
-      } else {
-        this.props.onChangeTab(currentIndex);
+      let nextIndex = currentIndex;
+      if (!this._isReverseDirection(gestureState)) {
+        nextIndex = this._getNextIndex(evt, gestureState);
       }
+      this._transitionTo(currentValue, nextIndex, ({ finished }) => {
+        if (finished) {
+          this.props.onChangeTab(nextIndex);
+        }
+
+        this._isIdle = true;
+      });
     }
+
     this._lastValue = null;
-    this._isMoving = null;
   };
 
   render() {
