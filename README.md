@@ -108,6 +108,8 @@ Component responsible for managing tab scenes. It accepts the following props:
 - `renderFooter` - optional callback which renders a footer, useful for a bottom tab bar
 - `renderScene` - callback which renders a single scene
 
+Any other props are passed to the underlying pager.
+
 ### `<TabViewPagerPan />`
 
 Pager component based on `PanResponder`
@@ -115,6 +117,7 @@ Pager component based on `PanResponder`
 It accepts the following props:
 
 - `configureTransition` - optional callback which returns a configuration for the transition, return `null` to disable animation
+- `animationEnabled` - whether to enable page change animation
 - `swipeEnabled` - whether to enable swipe gestures
 - `swipeDistanceThreshold` - minimum swipe distance to trigger page switch
 - `swipeVelocityThreshold` - minimum swipe velocity to trigger page switch
@@ -127,6 +130,7 @@ Pager component based on `ScrollView` (default on iOS)
 It accepts the following props:
 
 - `swipeEnabled` - whether to enable swipe gestures
+- `animationEnabled` - whether to enable page change animation
 - `children` - React Element(s) to render
 
 ### `<TabViewPagerAndroid />`

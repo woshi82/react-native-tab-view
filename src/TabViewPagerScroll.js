@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
 
 type Props = PagerProps & {
   swipeEnabled?: boolean;
+  animationEnabled?: boolean;
   children?: any;
 }
 
@@ -38,6 +39,7 @@ export default class TabViewPagerScroll extends PureComponent<void, Props, void>
   static propTypes = {
     ...PagerPropsPropType,
     swipeEnabled: PropTypes.bool,
+    animationEnabled: PropTypes.bool,
     children: PropTypes.node,
   };
 
@@ -49,27 +51,24 @@ export default class TabViewPagerScroll extends PureComponent<void, Props, void>
   };
 
   componentDidMount() {
-    this._scrollTo(this.props.navigationState.index * this.props.layout.width);
+    this._scrollView.scrollTo({
+      x: this.props.navigationState.index * this.props.layout.width,
+      animated: false,
+    });
   }
 
   componentDidUpdate(prevProps: Props) {
     if (prevProps.layout !== this.props.layout || Children.count(prevProps.children) !== Children.count(this.props.children)) {
       global.requestAnimationFrame(() =>
-        this._scrollTo(this.props.navigationState.index * this.props.layout.width)
+        this._scrollView.scrollTo({
+          x: this.props.navigationState.index * this.props.layout.width,
+          animated: this.props.animationEnabled !== false,
+        })
       );
     }
   }
 
   _scrollView: Object;
-
-  _scrollTo = (x: number) => {
-    if (this._scrollView) {
-      this._scrollView.scrollTo({
-        x,
-        animated: false,
-      });
-    }
-  };
 
   _handleMomentumScrollEnd = (e: ScrollEvent) => {
     const nextIndex = Math.round(e.nativeEvent.contentOffset.x / this.props.layout.width);

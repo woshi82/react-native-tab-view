@@ -169,12 +169,20 @@ export default class TabViewAnimated extends PureComponent<DefaultProps, Props, 
   };
 
   _buildPagerProps = (): PagerProps => {
+    const {
+      initialLayout,
+      renderPager,
+      renderScene,
+      renderHeader,
+      renderFooter,
+      ...restProps,
+    } = this.props;
+
     return {
+      ...restProps,
       layout: this.state.layout,
       progress: this.state.progress,
       offset: this.state.offset,
-      navigationState: this.props.navigationState,
-      onChangeTab: this.props.onChangeTab,
     };
   };
 

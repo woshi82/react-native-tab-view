@@ -40,6 +40,7 @@ type DefaultProps = {
 type Props = PagerProps & {
   configureTransition: TransitionConfigurator;
   swipeEnabled?: boolean;
+  animationEnabled?: boolean;
   swipeDistanceThreshold: number;
   swipeVelocityThreshold: number;
   children?: any;
@@ -58,6 +59,7 @@ export default class TabViewPagerPan extends PureComponent<DefaultProps, Props, 
     ...PagerPropsPropType,
     configureTransition: PropTypes.func.isRequired,
     swipeEnabled: PropTypes.bool,
+    animationEnabled: PropTypes.bool,
     swipeDistanceThreshold: PropTypes.number.isRequired,
     swipeVelocityThreshold: PropTypes.number.isRequired,
     children: PropTypes.node,
@@ -116,17 +118,14 @@ export default class TabViewPagerPan extends PureComponent<DefaultProps, Props, 
   };
 
   _transitionTo = (fromValue: number, toValue: number, callback?: Function) => {
-    const currentTransitionProps = {
-      position: fromValue,
-    };
-    const nextTransitionProps = {
-      position: toValue,
-    };
-    let transitionSpec;
-    if (this.props.configureTransition) {
-      transitionSpec = this.props.configureTransition(currentTransitionProps, nextTransitionProps);
-    }
-    if (transitionSpec) {
+    if (this.props.configureTransition && this.props.animationEnabled !== false) {
+      const currentTransitionProps = {
+        position: fromValue,
+      };
+      const nextTransitionProps = {
+        position: toValue,
+      };
+      const transitionSpec = this.props.configureTransition(currentTransitionProps, nextTransitionProps);
       const { timing, ...transitionConfig } = transitionSpec;
       timing(this.props.offset, {
         ...transitionConfig,
