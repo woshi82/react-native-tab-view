@@ -31,7 +31,7 @@ export type PagerProps = {
   navigationState: NavigationState;
   progress: Animated.Value;
   offset: Animated.Value;
-  jumpToIndex: (index: number) => void;
+  onChangeTab: (index: number) => void;
 }
 
 export type PagerNormalizerProps = {
@@ -49,5 +49,5 @@ export type SceneRendererProps = {
   };
   navigationState: NavigationState;
   position: Animated.Value;
-  jumpToIndex: (index: number) => void;
+  onChangeTab: (index: number) => void;
 }

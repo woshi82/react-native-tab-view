@@ -125,7 +125,7 @@ export default class TopBarIconExample extends Component {
       <View style={styles.tabbar}>
         {props.navigationState.routes.map((route, index) => {
           return (
-            <TouchableWithoutFeedback key={route.key} onPress={() => props.jumpToIndex(index)}>
+            <TouchableWithoutFeedback key={route.key} onPress={() => props.onChangeTab(index)}>
               <Animated.View style={styles.tab}>
                 {this._renderIcon(props)({ route, index })}
                 {this._renderLabel(props)({ route, index })}

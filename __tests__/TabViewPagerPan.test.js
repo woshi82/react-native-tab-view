@@ -22,7 +22,7 @@ it('renders all children', () => {
       }}
       progress={new Animated.Value(0)}
       offset={new Animated.Value(1)}
-      jumpToIndex={jest.fn()}
+      onChangeTab={jest.fn()}
       getLastPosition={jest.fn()}
       subscribe={jest.fn()}
     >

@@ -73,7 +73,7 @@ export default class TabViewPagerScroll extends PureComponent<void, Props, void>
 
   _handleMomentumScrollEnd = (e: ScrollEvent) => {
     const nextIndex = Math.round(e.nativeEvent.contentOffset.x / this.props.layout.width);
-    this.props.jumpToIndex(nextIndex);
+    this.props.onChangeTab(nextIndex);
   };
 
   _setRef = (el: Object) => (this._scrollView = el);

@@ -127,7 +127,7 @@ export default class TabViewTransitioner extends PureComponent<DefaultProps, Pro
       layout: this.state.layout,
       navigationState: this.props.navigationState,
       position: this.state.position,
-      jumpToIndex: this._jumpToIndex,
+      onChangeTab: this.props.onChangeTab,
       getLastPosition: this._getLastPosition,
       subscribe: this._addSubscription,
     };
@@ -158,37 +158,6 @@ export default class TabViewTransitioner extends PureComponent<DefaultProps, Pro
       }
     }
   }
-
-  _jumpToIndex = (index: number) => {
-    if (!this._mounted) {
-      // We are no longer mounted, this is a no-op
-      return;
-    }
-
-    const { canJumpToTab, navigationState } = this.props;
-
-    if (canJumpToTab && !canJumpToTab(navigationState.routes[index])) {
-      const lastPosition = this._getLastPosition();
-      if (lastPosition !== navigationState.index) {
-        this._transitionTo(navigationState.index);
-      }
-      return;
-    }
-
-    this._triggerEvent('jump', index);
-    this._nextIndex = index;
-    this._transitionTo(index, () =>
-      global.requestAnimationFrame(() => {
-        if (this.props.navigationState.index === index) {
-          return;
-        }
-        // Prevent extra setState when index updated mid-transition
-        if (this._nextIndex === index && this._mounted) {
-          this.props.onRequestChangeTab(index);
-        }
-      })
-    );
-  };
 
   _addSubscription = (event: SubscriptionName, callback: Function) => {
     if (!this._subscriptions[event]) {

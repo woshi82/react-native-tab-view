@@ -22,7 +22,7 @@ export const PagerPropsPropType = {
   navigationState: NavigationStatePropType.isRequired,
   progress: PropTypes.instanceOf(Animated.Value).isRequired,
   offset: PropTypes.instanceOf(Animated.Value).isRequired,
-  jumpToIndex: PropTypes.func.isRequired,
+  onChangeTab: PropTypes.func.isRequired,
 };
 
 export const SceneRendererPropType = {
@@ -33,5 +33,5 @@ export const SceneRendererPropType = {
   }).isRequired,
   navigationState: NavigationStatePropType.isRequired,
   position: PropTypes.object.isRequired,
-  jumpToIndex: PropTypes.func.isRequired,
+  onChangeTab: PropTypes.func.isRequired,
 };

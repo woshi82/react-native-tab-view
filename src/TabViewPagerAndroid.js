@@ -65,7 +65,6 @@ export default class TabViewPagerAndroid extends PureComponent<void, Props, void
     }
   }
 
-  _jumpListener: Object;
   _viewPager: Object;
   _isIdle: boolean = true;
   _currentIndex: number;
@@ -85,7 +84,7 @@ export default class TabViewPagerAndroid extends PureComponent<void, Props, void
     if (e === 'idle') {
       this._isIdle = true;
       if (this._currentIndex !== this.props.navigationState.index) {
-        this.props.jumpToIndex(this._currentIndex);
+        this.props.onChangeTab(this._currentIndex);
       }
     } else {
       this._isIdle = false;
@@ -96,7 +95,7 @@ export default class TabViewPagerAndroid extends PureComponent<void, Props, void
     this._currentIndex = e.nativeEvent.position;
   };
 
-  _setRef = (el: Object) => (this._viewPager = el);
+  _setRef = (el: Object) => (this._viewPager = el ? el.getNode() : null);
 
   render() {
     const { children, navigationState, swipeEnabled } = this.props;

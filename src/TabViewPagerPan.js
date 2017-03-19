@@ -217,9 +217,9 @@ export default class TabViewPagerPan extends PureComponent<DefaultProps, Props, 
     if (currentValue !== currentIndex) {
       if (this._isMoving && !this._isReverseDirection(gestureState)) {
         const nextIndex = this._getNextIndex(evt, gestureState);
-        this.props.jumpToIndex(nextIndex);
+        this.props.onChangeTab(nextIndex);
       } else {
-        this.props.jumpToIndex(currentIndex);
+        this.props.onChangeTab(currentIndex);
       }
     }
     this._lastValue = null;

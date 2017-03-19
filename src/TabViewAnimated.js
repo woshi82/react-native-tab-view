@@ -102,7 +102,7 @@ export default class TabViewAnimated extends PureComponent<DefaultProps, Props, 
       progress,
       offset,
       navigationState: this.props.navigationState,
-      jumpToIndex: () => {},
+      onChangeTab: () => {},
     });
 
     const position = pager.type.normalize({
@@ -174,7 +174,7 @@ export default class TabViewAnimated extends PureComponent<DefaultProps, Props, 
       progress: this.state.progress,
       offset: this.state.offset,
       navigationState: this.props.navigationState,
-      jumpToIndex: this._jumpToIndex,
+      onChangeTab: this.props.onChangeTab,
     };
   };
 
@@ -183,17 +183,8 @@ export default class TabViewAnimated extends PureComponent<DefaultProps, Props, 
       layout: this.state.layout,
       position: this.state.position,
       navigationState: this.props.navigationState,
-      jumpToIndex: this._jumpToIndex,
+      onChangeTab: this.props.onChangeTab,
     };
-  };
-
-  _jumpToIndex = (index: number) => {
-    if (!this._mounted) {
-      // We are no longer mounted, this is a no-op
-      return;
-    }
-
-    this.props.onChangeTab(index);
   };
 
   render() {

@@ -444,8 +444,8 @@ export default class TabBar extends PureComponent<DefaultProps, Props, State> {
                   pressOpacity={this.props.pressOpacity}
                   delayPressIn={0}
                   onPress={() => { // eslint-disable-line react/jsx-no-bind
-                    const { onTabPress, jumpToIndex } = this.props;
-                    jumpToIndex(i);
+                    const { onTabPress, onChangeTab } = this.props;
+                    onChangeTab(i);
                     if (onTabPress) {
                       onTabPress(routes[i]);
                     }

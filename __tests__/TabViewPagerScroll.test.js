@@ -25,7 +25,7 @@ it('renders only focused child until layout', () => {
       }}
       progress={new Animated.Value(0)}
       offset={new Animated.Value(1)}
-      jumpToIndex={jest.fn()}
+      onChangeTab={jest.fn()}
       getLastPosition={jest.fn()}
       subscribe={jest.fn()}
     >
@@ -65,7 +65,7 @@ it('sets initial scroll position according to navigation state index', () => {
       }}
       progress={new Animated.Value(0)}
       offset={new Animated.Value(2)}
-      jumpToIndex={jest.fn()}
+      onChangeTab={jest.fn()}
       getLastPosition={jest.fn()}
       subscribe={jest.fn()}
     >
