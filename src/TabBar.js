@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
 });
 
 type IndicatorProps = SceneRendererProps & {
-  width: Animated.Value;
+  width: number;
 }
 
 type ScrollEvent = {
@@ -143,9 +143,12 @@ export default class TabBar extends PureComponent<DefaultProps, Props, State> {
   }
 
   componentDidMount() {
+    const { navigationState, position } = this.props;
     this._adjustScroll(this.props.navigationState.index);
-    // TODO: Figure out a way to listen to position
-    // this._positionListener = this.props.position.addListener(e => this._adjustScroll(e.value));
+
+    // FIXME: This is super hacky since we are using internal variables and methods
+    this._positionListenerA = position._a.addListener(e => this._adjustScroll(position.__getValue()));
+    this._positionListenerB = position._b.addListener(e => this._adjustScroll(position.__getValue()));
   }
 
   componentWillReceiveProps(nextProps: Props) {
@@ -172,10 +175,13 @@ export default class TabBar extends PureComponent<DefaultProps, Props, State> {
   }
 
   componentWillUnmount() {
-    // this._positionListener.remove();
+    const { position } = this.props;
+    position._a.removeListener(this._positionListenerA);
+    position._b.removeListener(this._positionListenerB);
   }
 
-  _positionListener: Object;
+  _positionListenerA: string;
+  _positionListenerB: string;
   _scrollView: Object;
   _isManualScroll: boolean = false;
   _isMomentumScroll: boolean = false;
@@ -192,14 +198,19 @@ export default class TabBar extends PureComponent<DefaultProps, Props, State> {
   }
 
   _renderIndicator = (props: IndicatorProps) => {
-    if (typeof this.props.renderIndicator !== 'undefined') {
-      return this.props.renderIndicator(props);
+    const { renderIndicator, indicatorStyle, scrollEnabled } = this.props;
+    if (typeof renderIndicator !== 'undefined') {
+      return renderIndicator(props);
     }
-    const { width, position } = props;
+    const { width, position, navigationState } = props;
+    const defaultWidth =
+      this.props.scrollEnabled || navigationState.index !== 0 ?
+        0 :
+        `${100 / navigationState.routes.length}%`;
     const translateX = Animated.multiply(position, width);
     return (
       <Animated.View
-        style={[ styles.indicator, { width, transform: [ { translateX } ] }, this.props.indicatorStyle ]}
+        style={[ styles.indicator, { width: width || defaultWidth, transform: [ { translateX } ] }, indicatorStyle ]}
       />
     );
   };
