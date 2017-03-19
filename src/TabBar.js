@@ -366,7 +366,7 @@ export default class TabBar extends PureComponent<DefaultProps, Props, State> {
         <Animated.View pointerEvents='none' style={[ styles.indicatorContainer, scrollEnabled ? { width: tabBarWidth, transform: [ { translateX } ] } : null ]}>
           {this._renderIndicator({
             ...this.props,
-            width: new Animated.Value(finalTabWidth),
+            width: finalTabWidth,
           })}
         </Animated.View>
         <View style={styles.scroll}>

@@ -123,22 +123,6 @@ export default class TabViewAnimated extends PureComponent<DefaultProps, Props, 
 
   state: State;
 
-  componentDidMount() {
-    this.state.progress.addListener(this._trackPosition);
-    this.state.offset.addListener(this._trackPosition);
-    this.state.animatedLayout.width.addListener(this._trackPosition);
-  }
-
-  componentWillUnmount() {
-    this.state.progress.removeListener(this._trackPosition);
-    this.state.offset.removeListener(this._trackPosition);
-    this.state.animatedLayout.width.removeListener(this._trackPosition);
-  }
-
-  _trackPosition = () => {
-    this._handleChangePosition(this.state.position.__getValue());
-  }
-
   _renderItems = () => {
     const { renderPager, renderScene, renderHeader, renderFooter, navigationState } = this.props;
     const { layout } = this.state;
