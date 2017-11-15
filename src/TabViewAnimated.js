@@ -48,9 +48,10 @@ type State = {
 let TabViewPager;
 
 switch (Platform.OS) {
-  case 'android':
-    TabViewPager = require('./TabViewPagerAndroid').default;
-    break;
+    //     https://github.com/react-native-community/react-native-tab-view/issues/105 暂时这样做， 可能会有其他未知bug
+//   case 'android':
+//     TabViewPager = require('./TabViewPagerAndroid').default;
+//     break;
   case 'ios':
     TabViewPager = require('./TabViewPagerScroll').default;
     break;
